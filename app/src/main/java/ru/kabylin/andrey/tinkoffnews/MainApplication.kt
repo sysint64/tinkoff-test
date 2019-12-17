@@ -8,4 +8,3 @@ class MainApplication : Application(), KodeinAware {
     override val kodein = Kodein.lazy {
     }
 }
-
