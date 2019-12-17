@@ -1,7 +1,8 @@
-package ru.kabylin.andrey.tinkoffnews
+package ru.kabylin.andrey.tinkoffnews.layers.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import ru.kabylin.andrey.tinkoffnews.R
 
 class MainActivity : AppCompatActivity() {
 
