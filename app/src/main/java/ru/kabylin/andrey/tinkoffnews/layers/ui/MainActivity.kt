@@ -6,12 +6,13 @@ import kotlinx.android.synthetic.main.activity_main.*
 import ru.kabylin.andrey.tinkoffnews.R
 import ru.kabylin.andrey.tinkoffnews.ext.hideView
 import ru.kabylin.andrey.tinkoffnews.ext.showView
+import ru.kabylin.andrey.tinkoffnews.layers.services.impl.NewsServiceImpl
 import ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_list.*
 import ru.kabylin.andrey.tinkoffnews.views.StateMachineAppCompatActivity
 
 class MainActivity : StateMachineAppCompatActivity<NewsListState, NewsStateMachineEvent>() {
     override val stateMachine
-        get() = NewsStateMachine()
+        get() = NewsStateMachine(NewsServiceImpl())
 
     override val initialState
         get() = LoadingState()

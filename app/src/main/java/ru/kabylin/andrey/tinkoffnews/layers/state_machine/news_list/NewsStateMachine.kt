@@ -1,12 +1,12 @@
 package ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_list
 
 import io.reactivex.Flowable
-import io.reactivex.Single
+import ru.kabylin.andrey.tinkoffnews.layers.services.NewsService
 import ru.kabylin.andrey.tinkoffnews.views.StateMachine
-import java.util.concurrent.TimeUnit
 import kotlin.UnsupportedOperationException
 
-class NewsStateMachine : StateMachine<NewsListState, NewsStateMachineEvent>() {
+class NewsStateMachine(private val newsService: NewsService) :
+    StateMachine<NewsListState, NewsStateMachineEvent>() {
     override fun onEvent(event: NewsStateMachineEvent): Flowable<NewsListState> =
         when (event) {
             is OnLoadListEvent -> loadList()
@@ -15,23 +15,18 @@ class NewsStateMachine : StateMachine<NewsListState, NewsStateMachineEvent>() {
             else -> throw UnsupportedOperationException("Unknown event $event")
         }
 
-    private fun serviceLoadList(): Single<String> {
-        return Single.just("")
-            .delay(3, TimeUnit.SECONDS)
-    }
-
     private fun loadList(): Flowable<NewsListState> =
         produce(
             LoadingState(),
-            serviceLoadList().map { LoadedState(listOf()) },
-            RouteToNewsContent("ref")
+            newsService.getNewsList().map { LoadedState(it) }
         )
 
     private fun onTap(event: OnNewsTapEvent): Flowable<NewsListState> =
         produce(RouteToNewsContent(event.ref))
 
     private fun onRefresh(): Flowable<NewsListState> =
-        Flowable.just<NewsListState>(LoadingState())
-            .delay(1, TimeUnit.SECONDS)
-            .flatMap { Flowable.just(LoadedState(listOf())) }
+        produce(
+            LoadingState(),
+            newsService.refreshNewsList().map { LoadedState(it) }
+        )
 }
