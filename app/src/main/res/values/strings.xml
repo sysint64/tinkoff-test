@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Tinkoff News</string>
+    <string name="unexpected_error">Unexpected error</string>
 </resources>

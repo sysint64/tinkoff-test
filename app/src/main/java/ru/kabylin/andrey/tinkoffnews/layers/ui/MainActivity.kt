@@ -2,7 +2,7 @@ package ru.kabylin.andrey.tinkoffnews.layers.ui
 
 import android.os.Bundle
 import android.util.Log
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_news_list.*
 import ru.kabylin.andrey.tinkoffnews.R
 import ru.kabylin.andrey.tinkoffnews.ext.hideView
 import ru.kabylin.andrey.tinkoffnews.ext.showView
@@ -19,7 +19,7 @@ class MainActivity : StateMachineAppCompatActivity<NewsListState, NewsStateMachi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_news_list)
 
         dispatchEvent(OnLoadListEvent())
 

@@ -16,9 +16,6 @@ fun Completable.subscribeOnComplete(onComplete: () -> Unit): Disposable =
 fun <T> Flowable<T>.subscribeOnNext(onNext: (T) -> Unit): Disposable =
     subscribe(onNext, {})
 
-fun <T> Observable<T>.subscribeOnNext(onNext: (T) -> Unit): Disposable =
-    subscribe(onNext, {})
-
 fun Disposable.disposeBy(disposables: CompositeDisposable) {
     disposables.add(this)
 }
