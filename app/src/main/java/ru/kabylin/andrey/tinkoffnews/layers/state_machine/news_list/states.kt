@@ -1,6 +1,6 @@
 package ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_list
 
-import ru.kabylin.andrey.tinkoffnews.views.LocalizedString
+import ru.kabylin.andrey.tinkoffnews.containers.EitherStringRes
 import ru.kabylin.andrey.tinkoffnews.views.UiState
 
 interface NewsListState : UiState
@@ -10,14 +10,14 @@ interface NewsRouteState : NewsListState {
         get() = true
 }
 
-class LoadingState : NewsListState
+data class LoadingState(private val placeholder: String = "") : NewsListState
 
-data class LoadingErrorState(val errorMessage: LocalizedString) : NewsListState {
+data class LoadingErrorState(val errorMessage: EitherStringRes) : NewsListState {
     override val isCheckpointState: Boolean
         get() = true
 }
 
-data class LoadedState(val items: List<NewItemUiModel>) : NewsListState {
+data class LoadedState(val items: List<NewsItemUiModel>) : NewsListState {
     override val isCheckpointState: Boolean
         get() = true
 }

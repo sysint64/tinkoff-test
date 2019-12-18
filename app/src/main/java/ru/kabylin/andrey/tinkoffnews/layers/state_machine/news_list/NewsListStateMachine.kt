@@ -1,13 +1,18 @@
 package ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_list
 
 import io.reactivex.Flowable
+import ru.kabylin.andrey.tinkoffnews.containers.EitherStringRes
 import ru.kabylin.andrey.tinkoffnews.layers.services.NewsService
-import ru.kabylin.andrey.tinkoffnews.views.LocalizedString
 import ru.kabylin.andrey.tinkoffnews.views.StateMachine
 import kotlin.UnsupportedOperationException
 
-class NewsStateMachine(private val newsService: NewsService) :
-    StateMachine<NewsListState, NewsStateMachineEvent>() {
+class NewsListStateMachine(private val newsService: NewsService) :
+    StateMachine<NewsListState, NewsStateMachineEvent>()
+{
+    fun onEvents(vararg events: NewsStateMachineEvent): Flowable<NewsListState> {
+        return Flowable.merge(events.map(::onEvent))
+    }
+
     override fun onEvent(event: NewsStateMachineEvent): Flowable<NewsListState> =
         when (event) {
             is OnLoadListEvent -> loadList()
@@ -22,7 +27,7 @@ class NewsStateMachine(private val newsService: NewsService) :
             newsService.getNewsList()
                 .map<NewsListState> { LoadedState(it) }
                 .onErrorReturn {
-                    LoadingErrorState(LocalizedString.fromString(it.message ?: "Error"))
+                    LoadingErrorState(EitherStringRes.string(it.message ?: "Error"))
                 }
         )
 
@@ -34,7 +39,7 @@ class NewsStateMachine(private val newsService: NewsService) :
             newsService.refreshNewsList()
                 .map<NewsListState> { LoadedState(it) }
                 .onErrorReturn {
-                    LoadingErrorState(LocalizedString.fromString(it.message ?: "Error"))
+                    LoadingErrorState(EitherStringRes.string(it.message ?: "Error"))
                 }
         )
 }

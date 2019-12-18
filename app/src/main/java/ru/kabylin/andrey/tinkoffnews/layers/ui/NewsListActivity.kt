@@ -2,20 +2,30 @@ package ru.kabylin.andrey.tinkoffnews.layers.ui
 
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_news_list.*
 import ru.kabylin.andrey.tinkoffnews.R
 import ru.kabylin.andrey.tinkoffnews.ext.hideView
 import ru.kabylin.andrey.tinkoffnews.ext.showView
 import ru.kabylin.andrey.tinkoffnews.layers.services.impl.NewsServiceImpl
 import ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_list.*
+import ru.kabylin.andrey.tinkoffnews.layers.ui.holders.NewsListItemHolder
 import ru.kabylin.andrey.tinkoffnews.views.StateMachineAppCompatActivity
+import ru.kabylin.andrey.tinkoffnews.views.recyclerview.SingleItemRecyclerAdapter
 
-class MainActivity : StateMachineAppCompatActivity<NewsListState, NewsStateMachineEvent>() {
+class NewsListActivity : StateMachineAppCompatActivity<NewsListState, NewsStateMachineEvent>() {
     override val stateMachine
-        get() = NewsStateMachine(NewsServiceImpl())
+        get() = NewsListStateMachine(NewsServiceImpl())
 
     override val initialState
         get() = LoadingState()
+
+    private val items = ArrayList<NewsItemUiModel>()
+
+    private val recyclerAdapter by lazy {
+        SingleItemRecyclerAdapter(this, items, R.layout.item_news,
+            ::NewsListItemHolder, ::onNewsItemClick)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,10 +36,17 @@ class MainActivity : StateMachineAppCompatActivity<NewsListState, NewsStateMachi
         swipeRefreshLayout.setOnRefreshListener {
             dispatchEvent(OnRefreshListEvent())
         }
+
+        recyclerView.adapter = recyclerAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun onNewsItemClick(newsItem: NewsItemUiModel) {
+        dispatchEvent(OnNewsTapEvent(newsItem.ref))
     }
 
     override fun onStateTransition(prev: NewsListState, next: NewsListState) {
-        Log.d("MainActivity", "TRANSITION from $prev to $next")
+        Log.d("NewsListActivity", "TRANSITION from $prev to $next")
 
         when (next) {
             is LoadingState -> {
@@ -53,6 +70,10 @@ class MainActivity : StateMachineAppCompatActivity<NewsListState, NewsStateMachi
                 textViewError.hideView()
                 swipeRefreshLayout.isEnabled = true
                 swipeRefreshLayout.isRefreshing = false
+
+                items.clear()
+                items.addAll(next.items)
+                recyclerAdapter.notifyDataSetChanged()
             }
         }
     }
@@ -60,7 +81,7 @@ class MainActivity : StateMachineAppCompatActivity<NewsListState, NewsStateMachi
     override fun onRoute(routeState: NewsListState) {
         when (routeState) {
             is RouteToNewsContent -> {
-                Log.d("MainActivity", "ROUTE: Go to news content")
+                Log.d("NewsListActivity", "ROUTE: Go to news content: " + routeState.ref)
             }
         }
     }
