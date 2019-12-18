@@ -35,18 +35,22 @@ class MainActivity : StateMachineAppCompatActivity<NewsListState, NewsStateMachi
             is LoadingState -> {
                 progressBar.showView()
                 recyclerView.hideView()
+                textViewError.hideView()
                 swipeRefreshLayout.isEnabled = false
                 swipeRefreshLayout.isRefreshing = false
             }
             is LoadingErrorState -> {
                 progressBar.hideView()
                 recyclerView.hideView()
+                textViewError.showView()
+                textViewError.text = next.errorMessage.toString(this)
                 swipeRefreshLayout.isEnabled = true
                 swipeRefreshLayout.isRefreshing = false
             }
             is LoadedState -> {
                 progressBar.hideView()
                 recyclerView.showView()
+                textViewError.hideView()
                 swipeRefreshLayout.isEnabled = true
                 swipeRefreshLayout.isRefreshing = false
             }

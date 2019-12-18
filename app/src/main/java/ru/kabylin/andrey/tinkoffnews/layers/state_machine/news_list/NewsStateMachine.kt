@@ -2,6 +2,7 @@ package ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_list
 
 import io.reactivex.Flowable
 import ru.kabylin.andrey.tinkoffnews.layers.services.NewsService
+import ru.kabylin.andrey.tinkoffnews.views.LocalizedString
 import ru.kabylin.andrey.tinkoffnews.views.StateMachine
 import kotlin.UnsupportedOperationException
 
@@ -18,7 +19,11 @@ class NewsStateMachine(private val newsService: NewsService) :
     private fun loadList(): Flowable<NewsListState> =
         produce(
             LoadingState(),
-            newsService.getNewsList().map { LoadedState(it) }
+            newsService.getNewsList()
+                .map<NewsListState> { LoadedState(it) }
+                .onErrorReturn {
+                    LoadingErrorState(LocalizedString.fromString(it.message ?: "Error"))
+                }
         )
 
     private fun onTap(event: OnNewsTapEvent): Flowable<NewsListState> =
@@ -27,6 +32,10 @@ class NewsStateMachine(private val newsService: NewsService) :
     private fun onRefresh(): Flowable<NewsListState> =
         produce(
             LoadingState(),
-            newsService.refreshNewsList().map { LoadedState(it) }
+            newsService.refreshNewsList()
+                .map<NewsListState> { LoadedState(it) }
+                .onErrorReturn {
+                    LoadingErrorState(LocalizedString.fromString(it.message ?: "Error"))
+                }
         )
 }
