@@ -31,7 +31,6 @@ class NewsStateMachine(private val newsService: NewsService) :
 
     private fun onRefresh(): Flowable<NewsListState> =
         produce(
-            LoadingState(),
             newsService.refreshNewsList()
                 .map<NewsListState> { LoadedState(it) }
                 .onErrorReturn {

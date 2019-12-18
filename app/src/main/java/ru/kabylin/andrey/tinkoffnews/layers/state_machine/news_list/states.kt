@@ -12,8 +12,14 @@ interface NewsRouteState : NewsListState {
 
 class LoadingState : NewsListState
 
-data class LoadingErrorState(val errorMessage: LocalizedString) : NewsListState
+data class LoadingErrorState(val errorMessage: LocalizedString) : NewsListState {
+    override val isCheckpointState: Boolean
+        get() = true
+}
 
-data class LoadedState(val items: List<NewItemUiModel>) : NewsListState
+data class LoadedState(val items: List<NewItemUiModel>) : NewsListState {
+    override val isCheckpointState: Boolean
+        get() = true
+}
 
 data class RouteToNewsContent(val ref: String) : NewsRouteState

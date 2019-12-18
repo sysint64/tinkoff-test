@@ -7,3 +7,5 @@ class OnLoadListEvent : NewsStateMachineEvent
 data class OnNewsTapEvent(val ref: String) : NewsStateMachineEvent
 
 class OnRefreshListEvent : NewsStateMachineEvent
+
+class OnUnhandledException(val throwable: Throwable) : NewsStateMachineEvent
