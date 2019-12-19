@@ -4,6 +4,9 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 abstract class StateMachine<State, Event> {
+    open fun onError(throwable: Throwable): Flowable<State> =
+        Flowable.error(throwable)
+
     abstract fun onEvent(event: Event): Flowable<State>
 
     fun onEvents(vararg events: Event): Flowable<State> {

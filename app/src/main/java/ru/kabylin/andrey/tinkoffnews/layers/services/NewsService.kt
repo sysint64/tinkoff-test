@@ -7,5 +7,5 @@ interface NewsService {
 
     fun getNewsList(): Single<List<NewsItemModel>>
 
-    fun getNewsContent(): Single<NewsContentModel>
+    fun getNewsContent(ref: String): Single<NewsContentModel>
 }

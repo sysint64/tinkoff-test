@@ -13,7 +13,7 @@ data class LoadingErrorState(val errorMessage: EitherStringRes) : NewsContentSta
         get() = true
 }
 
-data class LoadedState(val content: NewsContentModel) : NewsContentState {
+data class LoadedState(val data: NewsContentModel) : NewsContentState {
     override val isCheckpointState: Boolean
         get() = true
 }

@@ -1,5 +1,6 @@
 package ru.kabylin.andrey.tinkoffnews.layers.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,8 +25,10 @@ class NewsListActivity : StateMachineAppCompatActivity<NewsListState, NewsListEv
     private val items = ArrayList<NewsItemModel>()
 
     private val recyclerAdapter by lazy {
-        SingleItemRecyclerAdapter(this, items, R.layout.item_news,
-            ::NewsListItemHolder, ::onNewsItemClick)
+        SingleItemRecyclerAdapter(
+            this, items, R.layout.item_news,
+            ::NewsListItemHolder, ::onNewsItemClick
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,13 +79,16 @@ class NewsListActivity : StateMachineAppCompatActivity<NewsListState, NewsListEv
                 items.addAll(next.items)
                 recyclerAdapter.notifyDataSetChanged()
             }
+            else -> throw UnsupportedOperationException("Unknown state: $next")
         }
     }
 
     override fun onRoute(routeState: NewsListState) {
         when (routeState) {
             is RouteToNewsContent -> {
-                Log.d("NewsListActivity", "ROUTE: Go to news content: " + routeState.ref)
+                val intent = Intent(this, NewsContentActivity::class.java)
+                intent.putExtra("ref", routeState.ref)
+                startActivity(intent)
             }
         }
     }

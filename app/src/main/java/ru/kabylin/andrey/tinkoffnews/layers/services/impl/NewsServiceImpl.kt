@@ -42,11 +42,12 @@ class NewsServiceImpl : NewsService {
         )
             .delay(1, TimeUnit.SECONDS)
 
-    override fun getNewsContent(): Single<NewsContentModel> =
+    override fun getNewsContent(ref: String): Single<NewsContentModel> =
         Single.just(
             NewsContentModel(
                 title = "Test",
                 content = "Test content"
             )
         )
+            .delay(1, TimeUnit.SECONDS)
 }

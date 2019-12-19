@@ -35,6 +35,7 @@ abstract class StateMachineAppCompatActivity<State : UiState, Event> : AppCompat
 
     fun dispatchEvent(event: Event, scheduler: Scheduler = Schedulers.io()) {
         stateMachine.onEvent(event)
+            .onErrorResumeNext(stateMachine::onError)
             .onBackpressureBuffer()
             .subscribeOn(scheduler)
             .observeOn(AndroidSchedulers.mainThread())
@@ -62,7 +63,8 @@ abstract class StateMachineAppCompatActivity<State : UiState, Event> : AppCompat
 
     abstract fun onStateTransition(prev: State, next: State)
 
-    abstract fun onRoute(routeState: State)
+    open fun onRoute(routeState: State) {
+    }
 
     open fun showUnhandledException(throwable: Throwable) {
         val errorMessage = getUnhandledErrorMessage(this, throwable)
