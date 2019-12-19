@@ -10,6 +10,7 @@ import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 import ru.kabylin.andrey.tinkoffnews.R
 import ru.kabylin.andrey.tinkoffnews.ext.hideView
+import ru.kabylin.andrey.tinkoffnews.ext.setHtmlText
 import ru.kabylin.andrey.tinkoffnews.ext.showView
 import ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_content.*
 import ru.kabylin.andrey.tinkoffnews.views.StateMachineAppCompatActivity
@@ -61,24 +62,11 @@ class NewsContentActivity : StateMachineAppCompatActivity<NewsContentState, News
                 progressBar.hideView()
                 textViewError.hideView()
                 textViewContent.showView()
-                setContent(next)
-                textViewTitle.text = next.data.title
+                textViewTitle.setHtmlText(next.data.title)
+                textViewContent.setHtmlText(next.data.content)
                 title = next.data.title
             }
             else -> throw UnsupportedOperationException("Unknown state: $next")
-        }
-    }
-
-    private fun setContent(state: LoadedState) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            textViewContent.text =
-                Html.fromHtml(
-                    state.data.content,
-                    Html.FROM_HTML_MODE_COMPACT
-                )
-        } else {
-            @Suppress("DEPRECATION")
-            textViewContent.text = Html.fromHtml(state.data.content)
         }
     }
 }
