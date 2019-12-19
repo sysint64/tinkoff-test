@@ -1,6 +1,10 @@
 package ru.kabylin.andrey.tinkoffnews.layers.drivers.api.v1
 
-
+data class BaseResponse<T>(
+    val payload: T,
+    val resultCode: String,
+    val trackingId: String
+)
 
 data class NewsItemResponse(
     val id: String,

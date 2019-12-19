@@ -4,9 +4,9 @@ import io.reactivex.Completable
 import io.reactivex.Single
 
 interface NewsRepository {
-    fun getNewsList(): Single<List<NewsItemResponse>>
+    fun getNewsList(): Single<BaseResponse<List<NewsItemResponse>>>
 
-    fun getNewsContent(ref: String): Single<NewsContentResponse>
+    fun getNewsContent(ref: String): Single<BaseResponse<NewsContentResponse>>
 
     fun clear(): Completable
 }

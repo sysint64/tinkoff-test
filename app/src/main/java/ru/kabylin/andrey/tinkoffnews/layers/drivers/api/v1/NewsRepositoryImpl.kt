@@ -16,7 +16,7 @@ class NewsRepositoryImpl(
 
     private val lifeTime = LifeTime.defaultHandler<String>()
 
-    override fun getNewsList(): Single<List<NewsItemResponse>> {
+    override fun getNewsList(): Single<BaseResponse<List<NewsItemResponse>>> {
         return apiGateway.news()
 //        val cachedNews = db.dao().getValue("news")
 //
@@ -36,7 +36,7 @@ class NewsRepositoryImpl(
 //        }
     }
 
-    override fun getNewsContent(ref: String): Single<NewsContentResponse> =
+    override fun getNewsContent(ref: String): Single<BaseResponse<NewsContentResponse>> =
         apiGateway.newsContent(ref)
 
     override fun clear(): Completable =
