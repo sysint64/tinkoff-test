@@ -9,7 +9,7 @@ import io.reactivex.Maybe
 
 @Dao
 interface CacheDatabaseModelDao {
-    @Query("SELECT * FROM cache WHERE key = :key")
+    @Query("SELECT * FROM cache WHERE `key` = :key")
     fun getValue(key: String): Maybe<CacheDatabaseModel>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
