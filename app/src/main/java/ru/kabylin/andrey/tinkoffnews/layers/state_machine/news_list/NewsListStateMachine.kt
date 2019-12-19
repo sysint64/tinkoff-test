@@ -4,16 +4,13 @@ import io.reactivex.Flowable
 import ru.kabylin.andrey.tinkoffnews.containers.EitherStringRes
 import ru.kabylin.andrey.tinkoffnews.layers.services.NewsService
 import ru.kabylin.andrey.tinkoffnews.views.StateMachine
+import ru.kabylin.andrey.tinkoffnews.views.produce
 import kotlin.UnsupportedOperationException
 
 class NewsListStateMachine(private val newsService: NewsService) :
-    StateMachine<NewsListState, NewsStateMachineEvent>()
+    StateMachine<NewsListState, NewsListEvent>()
 {
-    fun onEvents(vararg events: NewsStateMachineEvent): Flowable<NewsListState> {
-        return Flowable.merge(events.map(::onEvent))
-    }
-
-    override fun onEvent(event: NewsStateMachineEvent): Flowable<NewsListState> =
+    override fun onEvent(event: NewsListEvent): Flowable<NewsListState> =
         when (event) {
             is OnLoadListEvent -> loadList()
             is OnNewsTapEvent -> onTap(event)

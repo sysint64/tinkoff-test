@@ -10,6 +10,7 @@ import ru.kabylin.andrey.tinkoffnews.layers.services.NewsService
 import java.lang.IllegalArgumentException
 import io.reactivex.subscribers.TestSubscriber
 import ru.kabylin.andrey.tinkoffnews.containers.EitherStringRes
+import ru.kabylin.andrey.tinkoffnews.layers.services.NewsItemModel
 
 class NewsListStateMachineTest {
     @Test
@@ -37,7 +38,7 @@ class NewsListStateMachineTest {
     @Test
     fun loadSuccessfully() {
         val newsService = mockk<NewsService>()
-        val data: List<NewsItemUiModel> = listOf(mockk(), mockk())
+        val data: List<NewsItemModel> = listOf(mockk(), mockk())
 
         every { newsService.getNewsList() } returns Single.just(data)
 
@@ -61,8 +62,8 @@ class NewsListStateMachineTest {
     @Test
     fun refreshSuccessfully() {
         val newsService = mockk<NewsService>()
-        val data: List<NewsItemUiModel> = listOf(mockk(), mockk())
-        val refreshData: List<NewsItemUiModel> = listOf(mockk(), mockk(), mockk())
+        val data: List<NewsItemModel> = listOf(mockk(), mockk())
+        val refreshData: List<NewsItemModel> = listOf(mockk(), mockk(), mockk())
 
         every { newsService.getNewsList() } returns Single.just(data)
         every { newsService.refreshNewsList() } returns Single.just(refreshData)
@@ -89,7 +90,7 @@ class NewsListStateMachineTest {
     @Test
     fun refreshFailed() {
         val newsService = mockk<NewsService>()
-        val data: List<NewsItemUiModel> = listOf(mockk(), mockk())
+        val data: List<NewsItemModel> = listOf(mockk(), mockk())
 
         every { newsService.getNewsList() } returns Single.just(data)
         every { newsService.refreshNewsList() } returns Single.error(IllegalArgumentException("Error"))
@@ -116,7 +117,7 @@ class NewsListStateMachineTest {
     @Test
     fun shouldRouteToContentOnNewsItemTap() {
         val newsService = mockk<NewsService>()
-        val data: List<NewsItemUiModel> = listOf(mockk(), mockk())
+        val data: List<NewsItemModel> = listOf(mockk(), mockk())
 
         every { newsService.getNewsList() } returns Single.just(data)
 

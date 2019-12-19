@@ -2,26 +2,29 @@ package ru.kabylin.andrey.tinkoffnews.views
 
 import io.reactivex.Flowable
 import io.reactivex.Single
-import ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_list.NewsListState
 
 abstract class StateMachine<State, Event> {
     abstract fun onEvent(event: Event): Flowable<State>
 
-    @Suppress("UNCHECKED_CAST")
-    protected fun produce(vararg states: Any): Flowable<NewsListState> {
-        val statesPublishers = ArrayList<Flowable<NewsListState>>()
+    fun onEvents(vararg events: Event): Flowable<State> {
+        return Flowable.merge(events.map(::onEvent))
+    }
+}
 
-        for (state in states) {
-            val publisher: Flowable<NewsListState> = when (state) {
-                is NewsListState -> Flowable.just(state)
-                is Single<*> -> state.toFlowable() as Flowable<NewsListState>
-                is Flowable<*> -> state as Flowable<NewsListState>
-                else -> throw UnsupportedOperationException("Couldn't create publisher for $state")
-            }
+@Suppress("UNCHECKED_CAST")
+inline fun <reified State> produce(vararg states: Any): Flowable<State> {
+    val statesPublishers = ArrayList<Flowable<State>>()
 
-            statesPublishers.add(publisher)
+    for (state in states) {
+        val publisher: Flowable<State> = when (state) {
+            is State -> Flowable.just(state)
+            is Single<*> -> state.toFlowable() as Flowable<State>
+            is Flowable<*> -> state as Flowable<State>
+            else -> throw UnsupportedOperationException("Couldn't create publisher for $state")
         }
 
-        return Flowable.concat(statesPublishers)
+        statesPublishers.add(publisher)
     }
+
+    return Flowable.concat(statesPublishers)
 }

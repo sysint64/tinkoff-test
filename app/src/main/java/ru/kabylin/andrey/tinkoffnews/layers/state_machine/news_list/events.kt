@@ -1,11 +1,11 @@
 package ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_list
 
-interface NewsStateMachineEvent
+interface NewsListEvent
 
-class OnLoadListEvent : NewsStateMachineEvent
+class OnLoadListEvent : NewsListEvent
 
-data class OnNewsTapEvent(val ref: String) : NewsStateMachineEvent
+data class OnNewsTapEvent(val ref: String) : NewsListEvent
 
-class OnRefreshListEvent : NewsStateMachineEvent
+class OnRefreshListEvent : NewsListEvent
 
-class OnUnhandledException(val throwable: Throwable) : NewsStateMachineEvent
+class OnUnhandledException(val throwable: Throwable) : NewsListEvent

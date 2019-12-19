@@ -7,20 +7,21 @@ import kotlinx.android.synthetic.main.activity_news_list.*
 import ru.kabylin.andrey.tinkoffnews.R
 import ru.kabylin.andrey.tinkoffnews.ext.hideView
 import ru.kabylin.andrey.tinkoffnews.ext.showView
+import ru.kabylin.andrey.tinkoffnews.layers.services.NewsItemModel
 import ru.kabylin.andrey.tinkoffnews.layers.services.impl.NewsServiceImpl
 import ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_list.*
 import ru.kabylin.andrey.tinkoffnews.layers.ui.holders.NewsListItemHolder
 import ru.kabylin.andrey.tinkoffnews.views.StateMachineAppCompatActivity
 import ru.kabylin.andrey.tinkoffnews.views.recyclerview.SingleItemRecyclerAdapter
 
-class NewsListActivity : StateMachineAppCompatActivity<NewsListState, NewsStateMachineEvent>() {
+class NewsListActivity : StateMachineAppCompatActivity<NewsListState, NewsListEvent>() {
     override val stateMachine
         get() = NewsListStateMachine(NewsServiceImpl())
 
     override val initialState
         get() = LoadingState()
 
-    private val items = ArrayList<NewsItemUiModel>()
+    private val items = ArrayList<NewsItemModel>()
 
     private val recyclerAdapter by lazy {
         SingleItemRecyclerAdapter(this, items, R.layout.item_news,
@@ -41,7 +42,7 @@ class NewsListActivity : StateMachineAppCompatActivity<NewsListState, NewsStateM
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun onNewsItemClick(newsItem: NewsItemUiModel) {
+    private fun onNewsItemClick(newsItem: NewsItemModel) {
         dispatchEvent(OnNewsTapEvent(newsItem.ref))
     }
 
