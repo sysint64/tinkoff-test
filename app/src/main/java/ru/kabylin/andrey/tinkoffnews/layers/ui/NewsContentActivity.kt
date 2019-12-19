@@ -2,6 +2,9 @@ package ru.kabylin.andrey.tinkoffnews.layers.ui
 
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_news_content.*
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.kodein
+import org.kodein.di.generic.instance
 import ru.kabylin.andrey.tinkoffnews.R
 import ru.kabylin.andrey.tinkoffnews.ext.hideView
 import ru.kabylin.andrey.tinkoffnews.ext.showView
@@ -10,9 +13,11 @@ import ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_content.*
 import ru.kabylin.andrey.tinkoffnews.views.StateMachine
 import ru.kabylin.andrey.tinkoffnews.views.StateMachineAppCompatActivity
 
-class NewsContentActivity : StateMachineAppCompatActivity<NewsContentState, NewsContentEvent>() {
-    override val stateMachine: StateMachine<NewsContentState, NewsContentEvent>
-        get() = NewsContentStateMachine(NewsServiceImpl())
+class NewsContentActivity : StateMachineAppCompatActivity<NewsContentState, NewsContentEvent>(),
+    KodeinAware
+{
+    override val kodein by kodein()
+    override val stateMachine by instance<NewsContentStateMachine>()
 
     override val initialState: NewsContentState
         get() = LoadingState()

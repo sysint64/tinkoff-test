@@ -6,7 +6,7 @@ import retrofit2.http.Query
 
 interface ApiGateway {
     @GET("/v1/news")
-    fun news(): Single<NewApiResponse>
+    fun news(): Single<List<NewsItemResponse>>
 
     @GET("/v1/news_content")
     fun newsContent(@Query("id") id: String): Single<NewsContentResponse>

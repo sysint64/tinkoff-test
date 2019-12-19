@@ -26,7 +26,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "API_ENDPOINT", "\"https://api.tinkoff.ru\"")
+        }
+
         release {
+            buildConfigField("String", "API_ENDPOINT", "\"https://api.tinkoff.ru\"")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -34,7 +39,7 @@ android {
 }
 
 def retrofit_version = "2.6.3"
-def kodein_version = "6.5.0"
+def kodein_version = "6.2.1"
 def room_version = "2.2.2"
 
 dependencies {
@@ -54,6 +59,7 @@ dependencies {
     // DI
     implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
     implementation "org.kodein.di:kodein-di-framework-android-core:$kodein_version"
+    implementation "org.kodein.di:kodein-di-framework-android-x:$kodein_version"
 
     // Networking
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"

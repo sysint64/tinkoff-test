@@ -7,9 +7,12 @@ import androidx.room.Query
 
 @Dao
 interface CacheDatabaseModelDao {
-    @Query("SELECT value FROM cache WHERE 'key' = :key")
-    fun getValue(key: String): String
+    @Query("SELECT * FROM cache WHERE 'key' = :key")
+    fun getValue(key: String): CacheDatabaseModel?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertValue(data: CacheDatabaseModel)
+
+    @Query("DELETE FROM cache")
+    fun clear()
 }

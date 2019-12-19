@@ -1,29 +1,29 @@
 package ru.kabylin.andrey.tinkoffnews.containers
 
-class LifeTime<T>(
-    val durationInMilliseconds: Long,
-    val isLeftoverHandler: (LifeTimeModel<T>) -> Boolean
-) {
+import ru.kabylin.andrey.tinkoffnews.ext.now
+
+class LifeTime(val isLeftoverHandler: (ttl: Long) -> Boolean) {
     companion object {
-        fun <T> defaultHandler(durationInMilliseconds: Long): LifeTime<T> {
+        fun <T> defaultHandler(): LifeTime {
             return LifeTime(
-                durationInMilliseconds,
-                isLeftoverHandler = { LifeTimeModel.isLeftover(it) }
+                isLeftoverHandler = { isLeftover(it) }
             )
         }
 
-        fun <T> infinity(): LifeTime<T> {
+        fun <T> infinity(): LifeTime {
             return LifeTime(
-                0L,
                 isLeftoverHandler = { false }
             )
         }
 
-        fun <T> zero(): LifeTime<T> {
+        fun <T> zero(): LifeTime {
             return LifeTime(
-                0L,
                 isLeftoverHandler = { true }
             )
         }
     }
+}
+
+fun isLeftover(ttl: Long): Boolean {
+    return now().time > ttl
 }

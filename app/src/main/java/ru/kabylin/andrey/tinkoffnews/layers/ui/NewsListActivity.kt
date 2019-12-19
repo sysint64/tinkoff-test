@@ -5,19 +5,23 @@ import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_news_list.*
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.kodein
+import org.kodein.di.generic.instance
 import ru.kabylin.andrey.tinkoffnews.R
 import ru.kabylin.andrey.tinkoffnews.ext.hideView
 import ru.kabylin.andrey.tinkoffnews.ext.showView
 import ru.kabylin.andrey.tinkoffnews.layers.services.NewsItemModel
-import ru.kabylin.andrey.tinkoffnews.layers.services.impl.NewsServiceImpl
 import ru.kabylin.andrey.tinkoffnews.layers.state_machine.news_list.*
 import ru.kabylin.andrey.tinkoffnews.layers.ui.holders.NewsListItemHolder
 import ru.kabylin.andrey.tinkoffnews.views.StateMachineAppCompatActivity
 import ru.kabylin.andrey.tinkoffnews.views.recyclerview.SingleItemRecyclerAdapter
 
-class NewsListActivity : StateMachineAppCompatActivity<NewsListState, NewsListEvent>() {
-    override val stateMachine
-        get() = NewsListStateMachine(NewsServiceImpl())
+class NewsListActivity : StateMachineAppCompatActivity<NewsListState, NewsListEvent>(),
+    KodeinAware
+{
+    override val kodein by kodein()
+    override val stateMachine by instance<NewsListStateMachine>()
 
     override val initialState
         get() = LoadingState()

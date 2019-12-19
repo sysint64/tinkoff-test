@@ -1,7 +1,9 @@
 package ru.kabylin.andrey.tinkoffnews.layers.drivers.api.v1
 
-data class NewApiResponse(
-    val id: Long,
+
+
+data class NewsItemResponse(
+    val id: String,
     val name: String,
     val text: String,
     val publicationDate: DateResponse,
