@@ -1,6 +1,8 @@
 package ru.kabylin.andrey.tinkoffnews.layers.ui
 
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import kotlinx.android.synthetic.main.activity_news_content.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -14,8 +16,7 @@ import ru.kabylin.andrey.tinkoffnews.views.StateMachine
 import ru.kabylin.andrey.tinkoffnews.views.StateMachineAppCompatActivity
 
 class NewsContentActivity : StateMachineAppCompatActivity<NewsContentState, NewsContentEvent>(),
-    KodeinAware
-{
+    KodeinAware {
     override val kodein by kodein()
     override val stateMachine by instance<NewsContentStateMachine>()
 
@@ -52,10 +53,23 @@ class NewsContentActivity : StateMachineAppCompatActivity<NewsContentState, News
                 progressBar.hideView()
                 textViewError.hideView()
                 textViewContent.showView()
-                textViewContent.text = next.data.content
+                setContent(next)
                 title = next.data.title
             }
             else -> throw UnsupportedOperationException("Unknown state: $next")
+        }
+    }
+
+    private fun setContent(state: LoadedState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            textViewContent.text =
+                Html.fromHtml(
+                    state.data.content,
+                    Html.FROM_HTML_MODE_COMPACT
+                )
+        } else {
+            @Suppress("DEPRECATION")
+            textViewContent.text = Html.fromHtml(state.data.content)
         }
     }
 }
