@@ -2,7 +2,6 @@ package ru.kabylin.andrey.tinkoffnews.layers.drivers.api.v1
 
 import com.google.gson.Gson
 import io.reactivex.Completable
-import io.reactivex.Single
 import retrofit2.Retrofit
 import ru.kabylin.andrey.tinkoffnews.containers.LifeTime
 import ru.kabylin.andrey.tinkoffnews.ext.add
@@ -10,6 +9,7 @@ import ru.kabylin.andrey.tinkoffnews.ext.flatMapPassCurrentCompletable
 import ru.kabylin.andrey.tinkoffnews.ext.now
 import ru.kabylin.andrey.tinkoffnews.layers.drivers.db.CacheDatabase
 import ru.kabylin.andrey.tinkoffnews.layers.drivers.db.CacheDatabaseModel
+import ru.kabylin.andrey.tinkoffnews.layers.services.createNewsContentResponseFromCache
 import ru.kabylin.andrey.tinkoffnews.layers.services.createNewsListResponseFromCache
 import java.util.*
 
@@ -22,15 +22,28 @@ class NewsRepositoryImpl(
     private val lifeTime = LifeTime.defaultHandler<String>()
     private val gson by lazy { Gson() }
 
-    override fun getNewsList(): Single<BaseResponse<List<NewsItemResponse>>> {
-        return db.dao().getValue("news")
+    override fun getNewsList() =
+        db.dao().getValue("news")
             .filter { !lifeTime.isLeftover(it.ttl) }
             .map(::createNewsListResponseFromCache)
             .switchIfEmpty(getNewsAndCache())
-    }
 
-    private fun getNewsAndCache(): Single<BaseResponse<List<NewsItemResponse>>> =
-        apiGateway.news().flatMapPassCurrentCompletable { cacheNews(it) }
+    private fun getNewsAndCache() =
+        apiGateway.news()
+            .flatMapPassCurrentCompletable { cacheNews(it) }
+
+    override fun getNewsContent(ref: String) =
+        db.dao().getValue("news:$ref")
+            .filter { !lifeTime.isLeftover(it.ttl) }
+            .map(::createNewsContentResponseFromCache)
+            .switchIfEmpty(getNewsContentAndCache(ref))
+
+    private fun getNewsContentAndCache(ref: String) =
+        apiGateway.newsContent(ref)
+            .flatMapPassCurrentCompletable { cacheNewsContent(it) }
+
+    override fun clear() =
+        db.dao().clear()
 
     private fun cacheNews(response: BaseResponse<List<NewsItemResponse>>): Completable {
         val json = gson.toJson(response)
@@ -44,9 +57,15 @@ class NewsRepositoryImpl(
         )
     }
 
-    override fun getNewsContent(ref: String): Single<BaseResponse<NewsContentResponse>> =
-        apiGateway.newsContent(ref)
+    private fun cacheNewsContent(response: BaseResponse<NewsContentResponse>): Completable {
+        val json = gson.toJson(response)
 
-    override fun clear(): Completable =
-        db.dao().clear()
+        return db.dao().insertValue(
+            CacheDatabaseModel(
+                key = "news:${response.payload.title.id}",
+                value = json,
+                ttl = now().add(1, Calendar.HOUR).time
+            )
+        )
+    }
 }

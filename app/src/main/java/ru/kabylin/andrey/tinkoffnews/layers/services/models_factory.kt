@@ -9,7 +9,7 @@ import ru.kabylin.andrey.tinkoffnews.layers.drivers.db.CacheDatabaseModel
 
 fun createNewsItemModelFromResponse(response: BaseResponse<List<NewsItemResponse>>): List<NewsItemModel> =
     response.payload
-        .sortedBy { it.publicationDate.milliseconds }
+        .sortedByDescending { it.publicationDate.milliseconds }
         .map(::createNewsItemModelFromNewsItemResponse)
 
 fun createNewsItemModelFromNewsItemResponse(response: NewsItemResponse): NewsItemModel =
@@ -24,8 +24,13 @@ fun createNewsContentModelFromResponse(response: BaseResponse<NewsContentRespons
         content = response.payload.content
     )
 
-fun createNewsListResponseFromCache(cache: CacheDatabaseModel): BaseResponse<List<NewsItemResponse>> {
-    val collectionType = object : TypeToken<BaseResponse<List<NewsItemResponse>>>() {
-    }.type
-    return Gson().fromJson<BaseResponse<List<NewsItemResponse>>>(cache.value, collectionType)
+fun createNewsListResponseFromCache(cache: CacheDatabaseModel): BaseResponse<List<NewsItemResponse>> =
+    fromJson(cache.value)
+
+fun createNewsContentResponseFromCache(cache: CacheDatabaseModel): BaseResponse<NewsContentResponse> =
+    fromJson(cache.value)
+
+inline fun <reified T> fromJson(json: String): T {
+    val collectionType = object : TypeToken<T>() {}.type
+    return Gson().fromJson<T>(json, collectionType)
 }
