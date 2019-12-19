@@ -8,7 +8,7 @@ import java.util.*
 
 class LifeTimeTest {
     @Test
-    fun isLeftover() {
+    fun modelIsLeftover() {
         val model = LifeTimeModel(
             "Test",
             createdAt = now().add(-500, Calendar.MILLISECOND),
@@ -19,7 +19,7 @@ class LifeTimeTest {
     }
 
     @Test
-    fun isLeftoverExpired() {
+    fun modelIsLeftoverExpired() {
         val model = LifeTimeModel(
             "Test",
             createdAt = now().add(-2000, Calendar.MILLISECOND),
@@ -30,17 +30,14 @@ class LifeTimeTest {
     }
 
     @Test
-    fun isLeftoverConstructor() {
-        val model = LifeTimeModel(
-            "Test",
-            createdAt = now().add(-2000, Calendar.MILLISECOND),
-            lifeDurationInMilliseconds = 1000
-        )
-
+    fun lifeTimeTest() {
         val lifeTime = LifeTime.defaultHandler<String>()
         val lifeTimeInfinity = LifeTime.infinity<String>()
+        val lifeTimeZero = LifeTime.zero<String>()
 
-//        Assert.assertTrue(lifeTime.isLeftover(model))
-//        Assert.assertFalse(lifeTimeInfinity.isLeftover(model))
+        Assert.assertTrue(lifeTime.isLeftover(now().add(-2000, Calendar.MILLISECOND).time))
+        Assert.assertFalse(lifeTime.isLeftover(now().add(2000, Calendar.MILLISECOND).time))
+        Assert.assertTrue(lifeTimeZero.isLeftover(now().add(2000, Calendar.MILLISECOND).time))
+        Assert.assertFalse(lifeTimeInfinity.isLeftover(0))
     }
 }
