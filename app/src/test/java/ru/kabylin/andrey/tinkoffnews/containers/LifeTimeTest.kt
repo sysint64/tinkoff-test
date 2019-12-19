@@ -40,7 +40,7 @@ class LifeTimeTest {
         val lifeTime = LifeTime.defaultHandler<String>()
         val lifeTimeInfinity = LifeTime.infinity<String>()
 
-//        Assert.assertTrue(lifeTime.isLeftoverHandler(model))
-//        Assert.assertFalse(lifeTimeInfinity.isLeftoverHandler(model))
+//        Assert.assertTrue(lifeTime.isLeftover(model))
+//        Assert.assertFalse(lifeTimeInfinity.isLeftover(model))
     }
 }

@@ -4,6 +4,8 @@ import java.util.*
 
 fun now(): Date = Calendar.getInstance().time
 
+fun nowTime(): Long = now().time
+
 val Date.calendar: Calendar
     get() {
         val calendar = Calendar.getInstance()

@@ -1,8 +1,11 @@
 package ru.kabylin.andrey.tinkoffnews.layers.services
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import ru.kabylin.andrey.tinkoffnews.layers.drivers.api.v1.BaseResponse
 import ru.kabylin.andrey.tinkoffnews.layers.drivers.api.v1.NewsContentResponse
 import ru.kabylin.andrey.tinkoffnews.layers.drivers.api.v1.NewsItemResponse
+import ru.kabylin.andrey.tinkoffnews.layers.drivers.db.CacheDatabaseModel
 
 fun createNewsItemModelFromResponse(response: BaseResponse<List<NewsItemResponse>>): List<NewsItemModel> =
     response.payload
@@ -20,3 +23,9 @@ fun createNewsContentModelFromResponse(response: BaseResponse<NewsContentRespons
         title = response.payload.title.text,
         content = response.payload.content
     )
+
+fun createNewsListResponseFromCache(cache: CacheDatabaseModel): BaseResponse<List<NewsItemResponse>> {
+    val collectionType = object : TypeToken<BaseResponse<List<NewsItemResponse>>>() {
+    }.type
+    return Gson().fromJson<BaseResponse<List<NewsItemResponse>>>(cache.value, collectionType)
+}
